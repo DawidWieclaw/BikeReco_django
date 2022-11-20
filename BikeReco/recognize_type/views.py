@@ -41,4 +41,4 @@ class recognizeView(APIView):
         #TODO return proper response
         todos = Recognizer.objects.filter(user = request.user.id)
         serializer = RecognizeSerializer(todos, many=True)
-        return HttpResponse(1, status=status.HTTP_200_OK)
+        return HttpResponse("1", status=status.HTTP_200_OK)
