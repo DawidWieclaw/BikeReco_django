@@ -18,4 +18,4 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class RecognizeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recognizer
-        fields = ['url']
+        fields = ['url', 'a']

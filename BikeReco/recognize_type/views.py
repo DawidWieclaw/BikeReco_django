@@ -5,10 +5,13 @@ from rest_framework.views import APIView
 from rest_framework import status
 #from rest_framework.response import Response
 from django.http import HttpResponse
-from recognize_type.models import Recognizer
+from recognize_type.models import Recognizer, NNModel
 from recognize_type.serializers import RecognizeSerializer
 from recognize_type.serializers import UserSerializer, GroupSerializer, RecognizeSerializer
 
+from PIL import Image
+from io import BytesIO
+import base64
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -39,6 +42,29 @@ class recognizeView(APIView):
         List all the todo items for given requested user
         '''
         #TODO return proper response
-        todos = Recognizer.objects.filter(user = request.user.id)
-        serializer = RecognizeSerializer(todos, many=True)
-        return HttpResponse("1", status=status.HTTP_200_OK)
+        return HttpResponse("gitara", status=status.HTTP_200_OK)
+
+    # 1. List all
+    def post(self, request, *args, **kwargs):
+        '''
+        List all the todo items for given requested user
+        '''
+        img = Image.open(BytesIO(base64.b64decode(request.POST['image'])))
+        print(type(img))
+        model = NNModel()
+        pred = model.predict(img)
+        print("PRED: " + str(pred) + "\n")
+        #TODO return proper response
+
+        #todos = Recognizer.objects.filter(user = request.user.id)
+        #serializer = RecognizeSerializer(todos, many=True)
+        if pred == 0:
+            return HttpResponse("MTB", status=status.HTTP_200_OK)
+        elif pred == 1:
+            return HttpResponse("ROAD", status=status.HTTP_200_OK)
+        elif pred == 2:
+            return HttpResponse("CITY", status=status.HTTP_200_OK)
+        else:
+            return HttpResponse("ERROR", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    
